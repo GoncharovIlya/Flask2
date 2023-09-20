@@ -1,0 +1,12 @@
+<!-- <p>Имя сотрудника: {{ name }}</p> -->
+{% extends 'base.html' %}
+
+{% block title %}
+    Список
+{% endblock %}
+
+{% block content %}
+    {% for name in sel_db %}
+        <p>{{ name }}</p>
+    {% endfor %}
+{% endblock %}

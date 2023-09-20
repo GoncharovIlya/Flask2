@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Пользователи
+{% endblock %}
+
+{% block content %}
+    <table border = '1' cellspacing = '0'>
+        <tr>
+            <th>Логин</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Дата рождения</th>
+            <th>Телефон</th>
+        </tr>
+        {% for item in user %}
+        <tr>
+            <td><a href="users/{{ item.login }}">{{ item.login }}</a></td>
+            <td>{{item.last_name}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.surname}}</td>
+            <td>{{item.date_of_birth}}</td>
+            <td>{{item.phone}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
