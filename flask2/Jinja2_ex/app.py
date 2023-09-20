@@ -61,33 +61,44 @@ def tables():
     conn_to_db = get_db()
     cursor = conn_to_db.cursor()
     select = 'select last_name, name, surname from humans'
-    for raw in select:
-        cursor.execute(select)
-        sel_db = cursor.fetchall()
-    # table = list()
-    # for raw in sel_db:
-    #     table.append(dict(zip(('last_name', 'name', 'surname'), raw)))
+    cursor.execute(select)
+    sel_db = cursor.fetchall()
     return render_template('tables.html', sel_db=sel_db)
 
-@app.route('/users')
-def users():
-    user = list()
+@app.route('/users/insert', methods = ['POST'])
+def users_insert():
+    conn_to_db = get_db()
+    cursor = conn_to_db.cursor()
     with open('files/users.txt', encoding = 'utf-8') as file:
         for raw in file:
             data = raw.strip().split(';')
-            user.append(dict(zip(('login', 'last_name', 'name', 'surname', 'date_of_birth', 'phone'), data)))
+            insert = 'insert into users (login, last_name, name, surname, date_of_birth, phone) values (?, ?, ?, ?, ?, ?)'
+            cursor.execute(insert, (data[0], data[1], data[2], data[3], data[4], data[5]))
+            conn_to_db.commit()
+        return 200
+
+@app.route('/users')
+def users():
+    conn_to_db = get_db()
+    cursor = conn_to_db.cursor()
+    select = 'select login, last_name, name, surname, date_of_birth, phone from users'
+    cursor.execute(select)
+    sel_db = cursor.fetchall()
+    user = list()
+    for raw in sel_db:
+        user.append(dict(zip(('login', 'last_name', 'name', 'surname', 'date_of_birth', 'phone'), raw)))
     return render_template('users.html', **{'user': user})
 
 @app.route('/users/<login>')
 def users_info(login):
-    with open('files/users.txt', encoding = 'utf-8') as file:
-        for raw in file:
-            data = raw.strip().split(';')
-            if data[0] == login:                
-                user_l = (dict(zip(('login', 'last_name', 'name', 'surname', 'date_of_birth', 'phone'), data)))
-                return render_template('user_info.html', **{'user_l': user_l})
-        else:
-            abort(404, 'Нет такой записи')
+    conn_to_db = get_db()
+    cursor = conn_to_db.cursor()
+    select = "select last_name, name, surname, date_of_birth, phone from users where login = ?"
+    cursor.execute(select, (login,))
+    sel_db = cursor.fetchall()
+    for raw in sel_db:
+        user_l = (dict(zip(('last_name', 'name', 'surname', 'date_of_birth', 'phone'), raw)))
+    return render_template('user_info.html', **{'user_l': user_l})
 
 @app.route('/about')
 def about():

@@ -11,12 +11,12 @@
         <th>Имя</th>
         <th>Отчество</th>
     </tr>
-    <!-- {% for item in sel_db %} -->
+    {% for item in sel_db %}
     <tr>
-        <td>{{item.last_name}}</td>
-        <td>{{item.name}}</td>
-        <td>{{item.surname}}</td>
+        <td>{{item[0]}}</td>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
     </tr>
-    <!-- {% endfor %} -->
+    {% endfor %}
 </table>
 {% endblock %}
